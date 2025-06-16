@@ -1,35 +1,27 @@
 import os
-from duolingo_api import Duolingo
 import time
-from datetime import datetime
-
-# Ambil username dan password dari Environment Variables Railway
-username = os.environ.get("DUOLINGO_USERNAME")
-password = os.environ.get("DUOLINGO_PASSWORD")
+from duolingo_api import Duolingo
 
 def belajar():
-    print("Robot hidup. Menunggu jam belajar...")
+    username = os.getenv("DUOLINGO_USERNAME")
+    jwt_token = os.getenv("DUOLINGO_JWT")
 
-    # Waktu belajar (jam dan menit)
-    jam_belajar = 11
-    menit_belajar = 5
+    if not username or not jwt_token:
+        print("❌ Username atau JWT Duolingo belum diset di Railway Environment Variables.")
+        return
 
-    while True:
-        sekarang = datetime.now()
+    try:
+        lingo = Duolingo(username=username, jwt=jwt_token)
+        print(f"✅ Login berhasil sebagai {username}")
+        print("🎯 Misi harian:")
+        for goal in lingo.get_daily_goals():
+            print(f"- {goal['title']}: {goal['completed']}")
+    except Exception as e:
+        print("❌ Gagal login atau mengambil data:", e)
 
-        if sekarang.hour == jam_belajar and sekarang.minute == menit_belajar:
-            print("Waktunya belajar! Login ke Duolingo...")
+print("🤖 Robot hidup. Menunggu jam belajar...")
 
-            try:
-                lingo = Duolingo(username=username, password=password)
-                info = lingo.get_user_info()
-                print(f"Berhasil login sebagai {info['username']}! Total XP: {info['totalXp']}")
-
-            except Exception as e:
-                print("Gagal login ke Duolingo:", str(e))
-
-            break
-
-        time.sleep(10)
-
-belajar()
+# Looping setiap 10 menit
+while True:
+    belajar()
+    time.sleep(600)  # 600 detik = 10 menit
