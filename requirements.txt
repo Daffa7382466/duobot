@@ -1,1 +1,1 @@
-duolingo-api==1.2.1
+duolingo-api==0.5.4
