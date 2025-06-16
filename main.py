@@ -3,17 +3,16 @@ import time
 import datetime
 from duolingo import Duolingo
 
-# Ambil JWT dari environment variable
+username = os.getenv("DUO_USERNAME")
 jwt_token = os.getenv("DUO_JWT")
 
-# Waktu belajar
-jam_mulai = datetime.time(6, 0)     # Jam 6 pagi
-jam_berhenti = datetime.time(12, 0) # Jam 12 siang
+jam_mulai = datetime.time(6, 0)
+jam_berhenti = datetime.time(12, 0)
 
 def belajar():
     print("Robot hidup. Menunggu jam belajar...")
 
-    lingo = Duolingo(jwt=jwt_token)
+    lingo = Duolingo(username=username, jwt=jwt_token)
 
     while True:
         sekarang = datetime.datetime.now().time()
@@ -22,8 +21,8 @@ def belajar():
             xp = lingo.get_daily_xp_progress()
             print(f"[{datetime.datetime.now()}] XP hari ini: {xp}")
         else:
-            print(f"[{datetime.datetime.now()}] Di luar jam belajar. Tidur dulu...")
-        
-        time.sleep(60 * 5)  # tunggu 5 menit
+            print(f"[{datetime.datetime.now()}] Di luar jam belajar.")
+
+        time.sleep(300)
 
 belajar()
