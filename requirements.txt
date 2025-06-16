@@ -1,1 +1,1 @@
-duolingo-api==0.5.4
+playwright
